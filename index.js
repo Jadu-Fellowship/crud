@@ -2,31 +2,52 @@ const nameInput = document.getElementById("name");
 const emailInput = document.getElementById("email");
 const usersList = document.getElementById("users_list");
 const addUserBtn = document.getElementById("add_user");
+const delUserBtn = document.getElementById("delete_user");
+const updateUserBtn = document.getElementById("update_user");
 const viewUserBtn = document.getElementById("view_user");
 
-let users = [];
+const userStorage = localStorage.getItem("users");
+const JSONToUser = JSON.parse(userStorage);
+let users = JSONToUser || [];
+
+console.log(users);
 
 class User {
+  id;
   name;
   email;
 
-  constructor(name, email) {
+  constructor(id, name, email) {
+    this.id = id;
     this.name = name;
     this.email = email;
   }
 }
 
-showUsers();
+// showUsers();
 
 addUserBtn.addEventListener("click", function () {
-  const user = new User(nameInput.value, emailInput.value);
+  const user = new User(Date.now(), nameInput.value, emailInput.value);
   users.push(user);
   const usersJson = JSON.stringify(users);
   localStorage.setItem("users", usersJson);
 });
-{
-  /* <li class="user_record">Arsalan ( me@khattak.dev)</li> */
-}
+
+delUserBtn.addEventListener("click", function () {
+  users = users.filter((user) => user.email != emailInput.value);
+  const usersJson = JSON.stringify(users);
+  localStorage.setItem("users", usersJson);
+});
+
+updateUserBtn.addEventListener("click", function () {
+  user = users.map((user) => {
+    if (user.email == emailInput.value) {
+      user.name = nameInput.value;
+    }
+  });
+  const usersJson = JSON.stringify(users);
+  localStorage.setItem("users", usersJson);
+});
 
 viewUserBtn.addEventListener("click", function () {
   showUsers();
